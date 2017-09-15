@@ -34,6 +34,9 @@ public class UserResource {
 	@Inject
 	private SecretKeyService secretKeyService;
 	
+	@Inject
+	private UserService userService;
+	
 	private final Logger logger = LoggerFactory.getLogger(UserResource.class);
 	
 	/**
@@ -49,7 +52,7 @@ public class UserResource {
 	public Response authenticateUser(@FormParam("login") String login,
 			@FormParam("password") String password) {
 		try {
-			authenticate(login, password);
+			userService.authenticate(login, password);
 			
 			String token = issueToken(login);
 			
@@ -59,16 +62,6 @@ public class UserResource {
 			logger.info("Error!", e);
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
-	}
-
-	/**
-	 * 注意! 認証処理は必ず成功する。
-	 * @param login ログイン資格名
-	 * @param password　パスワード
-	 * @throws Exception 認証処理の例外
-	 */
-	private void authenticate(String login, String password) throws Exception{
-		
 	}
 
 	/**

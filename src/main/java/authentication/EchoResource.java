@@ -20,7 +20,7 @@ public class EchoResource {
 	@GET
 	@Path("jwt")
 	@Secured
-	public Response echoWithJWTTOken(@QueryParam("message") String message) {
+	public Response echoWithJWTToken(@QueryParam("message") String message) {
 		return Response.ok().entity(message == null ? "no message" : message).build();
 	}
 }
