@@ -1,13 +1,19 @@
-/target/
+*/target/
 
 # eclipse
-/.settings/
-.project
-.classpath
+*/.settings/
+*/.project/
+*/.classpath/
 
 # idea
-/.idea/
-/tmp/
-/bin/
-*.test
-*.swp
+*/.idea/
+*/tmp/
+*/bin/
+**/*.test
+**/*.swp
+
+# backup
+**/.bak
+
+# Mac OS
+**/.DS_Store
