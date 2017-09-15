@@ -35,6 +35,12 @@ public class SecuredFilter implements ContainerRequestFilter {
 		
 		String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 		
+		if (authorizationHeader == null) {
+			// ヘッダーに認証情報が存在しない場合、401 Unauthorizedを出力する。
+			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+			return;
+		}
+		
 		String token = authorizationHeader.substring("Bearer".length()).trim();
 		
 		try {
@@ -45,7 +51,6 @@ public class SecuredFilter implements ContainerRequestFilter {
 		} catch (Exception e) {
 			// トークンが無効な場合、例外が発生するため、処理を中断させ401 Unauthorizedを返却すればいい。
 			logger.error("#### invalid token : {}", token);
-			logger.error("", e);
 			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
 		}
 	}

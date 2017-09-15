@@ -39,6 +39,13 @@ public class SecuredFilterTest {
 	}
 	
 	@Test
+	public void testFilter_hasnt_authorization() throws Exception {
+		when(requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)).thenReturn(null);	
+		securedFilter.filter(requestContext);
+		verify(requestContext).abortWith(any());
+	}
+	
+	@Test
 	public void testFilter_authorized() throws Exception {
 		// 正当な暗号化キーの場合
 		Key key = secretKeyService.getKey();

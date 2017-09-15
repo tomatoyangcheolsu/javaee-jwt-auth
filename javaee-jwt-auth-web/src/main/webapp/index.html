@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Echo With JWT Test</title>
+</head>
+<body>
+	<h1>Echo With JWT Test</h1>
+	
+	<form onsubmit="return login();">
+		<div>
+			<label for="echo_message">Echo Message: </label>
+			<input id="echo_message" name="echo_message" type="text" size="140" value="sample text" />
+		</div>
+		<div><button type="submit">Echo With Login</button></div>
+	</form>
+	
+	<div>
+		<button type="button" onclick="afterLoginSuccess(null)">Echo Without Login</button>
+	</div>
+	<script>
+	function login() {
+		var login = "test";
+		var password = "test";
+		
+		var param = "";
+		param += "login=" + login;
+		param += "&password=" + password;
+		
+		var request = new XMLHttpRequest();
+		request.open("post", "http://localhost:8080/javaee-jwt-auth-rs/resources/users/login", true);
+		request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		request.setRequestHeader("Accept", "application/json");
+		
+		request.onreadystatechange = function onReadyStateChange() {	
+			if (request.readyState === 4 && request.status === 200) {
+				if (request.status === 200) {
+					afterLoginSuccess(request);
+				} else if (request.status === 401) {
+					alert("On URI:/users/login, Error: 401 Unauthorized.");
+				}
+			}
+		};
+		
+		request.send(param);
+		
+		return false;
+	}
+	
+	function afterLoginSuccess(request) {
+		var authorizationHeader = "";
+		if (request) {
+			authorizationHeader = request.getResponseHeader("Authorization");
+		}
+		
+		var echoMessage = document.forms[0].echo_message.value;
+		console.log("echo message: " + echoMessage);
+		
+		var param = (echoMessage.length > 0) ? "?message=" + echoMessage : "";
+		
+		request = new XMLHttpRequest();
+		request.open("get", "http://localhost:8080/javaee-jwt-auth-rs/resources/echo/jwt" + param, true);
+		if (authorizationHeader.length > 0) {
+			request.setRequestHeader("Authorization", authorizationHeader);
+		}
+		request.setRequestHeader("Accept", "text/plain");
+		
+		request.onreadystatechange = function onReadyStateChange() {	
+			if (request.readyState === 4) {
+				if (request.status === 200) {
+					afterEcho("On URI:/echo/jwt, Success: " + request.responseText);
+				} else if (request.status === 401) {
+					alert("On URI:/echo/jwt, Error: 401 Unauthorized.");
+				}
+			} 
+		};
+		
+		request.send(null);
+	}
+	
+	function afterEcho(text) {
+		alert(text);
+	}
+	</script>
+</body>
+</html>
