@@ -1,0 +1,13 @@
+/target/
+
+# eclipse
+/.settings/
+.project
+.classpath
+
+# idea
+/.idea/
+/tmp/
+/bin/
+*.test
+*.swp
